@@ -17,4 +17,6 @@ Now we can begin doing all sorts of complex processing to the mat, imgOriginal, 
   
   To a reasonable range your ball/circle would be within the given lighting.
   
+  I've also left some useful code commented out within `test.cpp`, as depending on your setup, may work better for you
+  
   Enjoy!
