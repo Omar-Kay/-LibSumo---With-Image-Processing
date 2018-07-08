@@ -64,7 +64,7 @@ public:
 	Control() : _udp(-1), _send_lock(), _rt(0), _rt_thread_in(), _rt_thread_out(), _image_thread(), _seqno(0)
 	{ }
 
-	bool open(/*cv::Mat&*/);
+	bool open(Mat&);
 	void close();
 
 	void move(int8_t, int8_t);

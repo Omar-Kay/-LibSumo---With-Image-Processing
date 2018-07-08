@@ -33,8 +33,6 @@
 #include <cmath>
 
 #include <time.h>
-
-//#include "image.h"
 #include "realtime.h"
 
 #include "decode.h"
@@ -370,7 +368,7 @@ void Control::growingCircles()
 	blockingSend(special(_seqno++, special::GrowingCircles));
 }
 
-bool Control::open(/*cv::Mat& _m*/)
+bool Control::open(Mat& _m)
 {
 	int sockfd;
 	struct sockaddr_in servaddr;
@@ -420,7 +418,7 @@ bool Control::open(/*cv::Mat& _m*/)
 
 	_image = new Image();
 	_image->reset();
-	_image_thread = std::thread(&Image::process, _image/*, std::ref(_m)*/);
+	_image_thread = std::thread(&Image::process, _image,std::ref(_m));
 
 	_ctrl_in = new ControlIn(this);
 	_ctrl_in->reset();

@@ -29,38 +29,92 @@ using namespace cv;
 //char key;
 int main(void)
 {
-
-	Mat image;
-
+	
+	 Mat imgOriginal;
+	int cou=0;
 	waitKey();
 	sumo::Control c;
-	if (!c.open(/*image*/))
+	if (!c.open(imgOriginal))
 		return EXIT_FAILURE;
-//	namedWindow("test", 0);
-//while(1)	
-//	imshow("test", image);
-#if 0
-	for (int i = 0; i < 4; i++) {
-		dispatcher.quickTurn(-M_PI/2);
-		usleep(1000000);
-	}
 
-	for (int i = 0 ; i < 6; i++) {
-		dispatcher.quickTurn(M_PI/3);
-		usleep(1500000);
-	}
-#endif
+ while (true)
+    {
+       
+if(imgOriginal.data)
+ {
+  resize(imgOriginal, imgOriginal, cvSize(640, 480));
+  Mat  imgHSV;
+
+  cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from BGR to HSV    "first step"
+  GaussianBlur(imgHSV, imgHSV, Size(7,7), 1.5, 1.5); // filter 
 	
-//c.move(20, 0);
-//c.quickTurnRight();	
-	
+  
+  Mat imgThresholded;
 
-	getchar(); 
+//  inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image  " extract red color"
+  
+  inRange(imgHSV, Scalar(104, 31, 43), Scalar(120, 182, 165), imgThresholded); //Threshold the image  " extract red color"
+      
+  //morphological opening (remove small objects from the foreground)
+  erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );   // avoid noise 
+  dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );  // avoid noise 
 
-	//c.close();
+  //morphological closing (fill small holes in the foreground)
+  dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );   // avoid noise 
+  erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );     // avoid noise
+medianBlur(imgThresholded,imgThresholded,15);
+medianBlur(imgThresholded,imgThresholded,9);
+//  Canny(imgHSV, imgHSV, 0, 30, 3);   
+ vector<Vec3f> circles;
+ 
+  // Apply the Hough Transform to find the circles
+ HoughCircles( imgThresholded, circles, CV_HOUGH_GRADIENT, 1, imgThresholded.rows/2 , 50, 16, 0, 0);
 
-	//return EXIT_SUCCESS;
-return 0;
+
+ if (circles.size()<1)
+	{
+	c.quickTurn(45);
+	}
+  // Draw the circles detected
+ for( size_t i = 0; i < circles.size(); i++ )
+  {
+if (circles.size()==1)
+     {Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+      int radius = cvRound(circles[i][2]);     
+      circle( imgOriginal, center, 3, Scalar(0,255,0), -1, 8, 0 );// circle center     
+     circle( imgOriginal, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
+      cout << "center : " << center << "\nradius : " << radius << endl;
+	int xcenter = imgOriginal.size().width;
+	/*while (!((center.x<(xcenter/2)+(xcenter*0.05))&&(center.x>(xcenter/2)-(xcenter*0.05))))
+	{
+	int turn = 1;
+	if (center.x<(xcenter/2)-(xcenter*0.05))
+	turn = -turn;
+	//cout<<"centerish"<<endl;
+	c.move(10,turn);
+	sleep(1);		
+	c.move(0,0);
+	sleep(1);
+	++cou;
+	}*/
+  }}
+//if ()
+// / Show your results
+  namedWindow( "Hough Circle Transform Demo", 0);
+  imshow( "Hough Circle Transform Demo", imgOriginal );
+ 
+
+  imshow("Thresholded Image", imgThresholded); //show the thresholded image
+
+        if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
+       {
+            cout << "esc key is pressed by user" << endl;
+            break; 
+       }
+    }}
+
+
+ return 0;
 } 
 
 
@@ -69,74 +123,56 @@ return 0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+/*
+Mat src, src_gray;
 
+VideoCapture cap("data.txt");
+if (!cap.isOpened()) return -1;
 
+  /// Read the image
+  namedWindow( "Hough Circle Transform Demo", 1);
 
-/*#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include "control.h"
-#include <unistd.h>
-char key;
-int main(void)
+while (1)
 {
-	sumo::Control c;
-	cv::Mat m;
-	if (!c.open(m))
-		return EXIT_FAILURE;
 
-#if 0
-	for (int i = 0; i < 4; i++) {
-		dispatcher.quickTurn(-M_PI/2);
-		usleep(1000000);
-	}
+cap>>src;
 
-	for (int i = 0 ; i < 6; i++) {
-		dispatcher.quickTurn(M_PI/3);
-		usleep(1500000);
-	}
-#endif
+  if( !src.data )
+    { return -1; }
 
-//	c.move(-20, 10);
-		//while(1)
-		//{
-//			sleep(1);
-			int i = 1;
-			c.quickTurn(45);
-			while(i<3)
-			{
-				c.move(10, 0);
-				sleep(1);
-				c.move(20, 0);
-				sleep(5);
-				c.move(10, 0);
-				sleep(1);
-				c.move(0, 0);
-				c.tap();
-				c.quickTurn(45);
-				i++;
-				//break;
-			}
-			//c.tap();
-			
-			//sleep(1);
-		//}
-	getchar(); //dispatcher.wait();
+  /// Convert it to gray
+// inRange(src, cv::Scalar(40, 32, 28), cv::Scalar(160, 255, 120), src_gray);
+//imshow("Grey-thresh", src_gray);
+  cvtColor( src, src_gray, CV_BGR2GRAY );
+  /// Reduce the noise so we avoid false circle detection
+  //GaussianBlur( src_gray, src_gray, Size(9, 9), 2, 2 );
+	medianBlur(src_gray, src_gray, 3);
+
+  vector<Vec3f> circles;
 
 
+  /// Apply the Hough Transform to find the circles
+  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 280, 51, 0, 0 );
 
-//#define ACCELERATION_CONSTANT 6
-//int mod = 0;
-	//while(1) {
-		
-			//mod = ACCELERATION_CONSTANT;
-		//else // breaking - we are going reverse 
-			//mod = ACCELERATION_CONSTANT * 2;
-	//}
+  /// Draw the circles detected
+  for( size_t i = 0; i < circles.size(); i++ )
+  {
+      Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+      int radius = cvRound(circles[i][2]);
+      // circle center
+      circle( src, center, 3, Scalar(0,255,0), -1, 8, 0 );
+      // circle outline
+      circle( src, center, radius, Scalar(0,0,255), 3, 8, 0 );
+	//std::cout<<"we got a fucking circleeeee";
+   }
 
+  /// Show your results
 
+  imshow( "Hough Circle Transform Demo", src );
 
-	c.close();
-
-	return EXIT_SUCCESS;
+ if(waitKey(30) >= 0) break;
+ 
 }*/
+
+
+/**/

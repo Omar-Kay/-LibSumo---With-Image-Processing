@@ -244,7 +244,7 @@ struct image : public packet
     uint16_t frame_number; /* absolute frame-name */
 	uint16_t unk0;         /* unknown */
 	uint8_t unk1;          /* unknown */
-	 uint8_t* jpeg = new uint8_t[head.size - sizeof(head) - 5];  /* image data JPEG */
+	 //uint8_t* jpeg = new uint8_t[head.size - sizeof(head) - 5];  /* image data JPEG */
 } __attribute__((packed));
 
 }

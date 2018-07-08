@@ -21,50 +21,49 @@
  */
 #include "image.h"
 #include "protocol.h"
-//#include <mutex>
-//#include <condition_variable>
+#include "iostream"
 
+#include <thread>   
+#include <mutex>    
+#include <chrono> 
+#include <iostream>
+#include <unistd.h>
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
+using namespace cv;
 using namespace sumo;
+using namespace std;
 
-
-void Image::process(/*cv::Mat& m*/)
+void Image::process(Mat& m)
 {
 	
-	//FILE *p = popen("mplayer -cache 32 -demuxer lavf -lavfdopts format=mjpeg -dumpstream -dumpfile yourfile.mjp", "w");
-	//FILE *p = popen("mplayer -cache 32 -demuxer lavf -lavfdopts format=mjpeg - >/home/cse/libsumo/libsumo/lol.mjp", "w");
-	FILE *p = popen("mplayer -cache 32 -demuxer lavf -lavfdopts format=mjpeg - >/dev/null 2>&1", "w");
-	//FILE *p = popen("mplayer -cache 32 -demuxer lavf -lavfdopts format=mjpeg", "w");
-	//FILE *p = fopen("data.txt","ab+");
-	unsigned char* buffer;
-	//mutex imageLock;
-	//bool newImageAvailable;
-	while (!_stop) {
-//if (!(i->frame_number%15))
-//	{
-		//unique_lock<mutex> ulock(imageLock);
-        	//imageAqcuired.wait(ulock,[&](){return !newImageAvailable;});
+	
+	while (!_stop) 	{
+		FILE *p = fopen("new_data","w+");
 		uint8_t *b = getMessage();
+
 		if (!b)
 			break;
 		auto *i = reinterpret_cast<struct image *>(b);
-		//uint8_t *lol = b + sizeof(*i);
-		//printf("pixel val: %d, fno: %d size: %d \n", lol[0]/*i->head.size*/, i->frame_number,i->head.size - sizeof(*i));
-		if (p)
-		{fwrite(b + sizeof(*i), 1, i->head.size - sizeof(*i), p);
-		/*m = cv::imread("data.txt", CV_LOAD_IMAGE_COLOR);
-		cv::namedWindow("test", 0);
-//while(1)	
-		cv::imshow("test", m);*/	
+
+		if (!(i->frame_number%15))
+		{
+			if (p) {
+				fwrite(b + sizeof(*i), 1, i->head.size - sizeof(*i), p);
+			}
+			fclose(p);
+			delete[] b;
+
+			usleep(50);
+			m = imread("new_data");
+			
 		}
-		//ulock.unlock();
-        	//newImageAvailable = true;
-        	//imageAqcuired.notify_one();
 		
-	delete[] b;
+		
 	}
-//}
-	pclose(p);
 }
 
 

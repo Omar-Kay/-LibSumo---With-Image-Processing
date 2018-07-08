@@ -27,6 +27,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+using namespace cv;
+
 namespace sumo {
 
 class Image : public MessageQueue, public StoppableThread
@@ -35,7 +37,7 @@ public:
 	Image() : MessageQueue(), StoppableThread()
 	{ }
 
-	void process(/*cv::Mat& m*/);
+	void process(Mat&);
 };
 
 }
