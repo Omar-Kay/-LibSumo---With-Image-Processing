@@ -1,4 +1,4 @@
-# -LibSumo---With-Image-Processing
+# -LibSumo - With OpenCV Exposure for Image Processing
 Added Functionality to control Parrot's Jumping Sumo Through Image Processing
 This is a slight modification to @iloreen/libsumo's reverse engineering of the library, so most credit goes to @iloreen.
 
