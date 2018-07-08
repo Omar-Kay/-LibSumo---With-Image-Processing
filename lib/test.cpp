@@ -3,6 +3,7 @@
  * controlling Parrot's connected toy: Jumping Sumo
  *
  * Copyright (C) 2014 I. Loreen
+ * Modified by Omar Khafagi
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -116,63 +117,3 @@ if (circles.size()==1)
 
  return 0;
 } 
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/*
-Mat src, src_gray;
-
-VideoCapture cap("data.txt");
-if (!cap.isOpened()) return -1;
-
-  /// Read the image
-  namedWindow( "Hough Circle Transform Demo", 1);
-
-while (1)
-{
-
-cap>>src;
-
-  if( !src.data )
-    { return -1; }
-
-  /// Convert it to gray
-// inRange(src, cv::Scalar(40, 32, 28), cv::Scalar(160, 255, 120), src_gray);
-//imshow("Grey-thresh", src_gray);
-  cvtColor( src, src_gray, CV_BGR2GRAY );
-  /// Reduce the noise so we avoid false circle detection
-  //GaussianBlur( src_gray, src_gray, Size(9, 9), 2, 2 );
-	medianBlur(src_gray, src_gray, 3);
-
-  vector<Vec3f> circles;
-
-
-  /// Apply the Hough Transform to find the circles
-  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 280, 51, 0, 0 );
-
-  /// Draw the circles detected
-  for( size_t i = 0; i < circles.size(); i++ )
-  {
-      Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-      int radius = cvRound(circles[i][2]);
-      // circle center
-      circle( src, center, 3, Scalar(0,255,0), -1, 8, 0 );
-      // circle outline
-      circle( src, center, radius, Scalar(0,0,255), 3, 8, 0 );
-	//std::cout<<"we got a fucking circleeeee";
-   }
-
-  /// Show your results
-
-  imshow( "Hough Circle Transform Demo", src );
-
- if(waitKey(30) >= 0) break;
- 
-}*/
-
-
-/**/

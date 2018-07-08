@@ -3,6 +3,7 @@
  * controlling Parrot's connected toy: Jumping Sumo
  *
  * Copyright (C) 2014 I. Loreen
+ * Modified by Omar Khafagi
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
