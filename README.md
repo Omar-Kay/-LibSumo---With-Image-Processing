@@ -2,7 +2,7 @@
 Added Functionality to control Parrot's Jumping Sumo Through Image Processing
 This is a slight modification to @iloreen/libsumo's reverse engineering of the library, so most credit goes to @iloreen.
 
-To use this modified library, you need to pull and install @iloreen's version https://github.com/iloreen/libsumo, and replace the lib directory with the one provided here.
+To use this modified library, you need to pull and install @iloreen's version https://github.com/iloreen/libsumo, and replace the lib directory with the one provided here. Make sure, to of course, include OpenCV (https://opencv.org/) in your project as well!
 
 I've simply added a method that exposes the data to OpenCV easily, for advanced image processing decisions to be taken. You'll notice in test.cpp that adding the output of the Jumping Sumo's video stream is as simple as adding this code:
 
